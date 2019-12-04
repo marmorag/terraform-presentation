@@ -10,7 +10,63 @@ export const theme = vsDark;
 
 # Hello 👋
 
-You are using [MDX Deck](https://github.com/jxnblk/mdx-deck) and [Code Surfer](https://codesurfer.pomb.us)
+This is about [Terraform](https://www.hashicorp.com/products/terraform) : pitch, advantages & usages
+
+---
+
+# What is Terraform
+
+- OpenSource <svg height="32" class="octicon octicon-mark-github text-white" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill="#fff" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+- Modular
+- Infrastructure-as-Code (HCL Syntax)
+- __NOT__ configuration management
+
+---
+
+# What is Terraform
+### The Challenge
+
+Manual provisioning is slow, error-prone and difficult to scale.
+- Low agility : manual workflow, GUI, ...
+- High cost : cloud waste (over provisionning)
+- High risk : human operator
+
+---
+
+# What is Terraform
+### The Solution
+
+Automate provisioning using infrastructure-as-code
+- Increaded agility : reduce time to provision
+- Control cost : scale as you really need
+- Lower risk : code reviews & embed provisioning guardrails
+
+---
+
+# Advantages
+
+- Portability / Compatibility
+- Dry runs
+- Immutable infrastructure (avoid conf. drift)
+
+---
+
+# Drawbacks
+
+- Stateful (sync.)
+- Existing stack
+- Secret management
+
+---
+
+# Terraform & HashiCorp ecosystem
+
+
+---
+
+# Pipeline example
+
+![pipeline](https://tf-pres-assets.s3.fr-par.scw.cloud/pipeline.png)
 
 ---
 
@@ -91,55 +147,8 @@ resource "aws_route53_zone" "primary" {
 
 ---
 
-<CodeSurferColumns themes={[vsDark, github]}>
-
-<Step>
-
-```js
-const magna = aliqua => aliqua.ut((enim, ad) => enim, 0);
-```
-
-```js
-const minim = (ad, enim) => dolore.magna(ad / enim);
-```
-
-</Step>
-
-<Step>
-
-```js
-const lorem = (ipsum, dolor, sit) => {
-  const amet = dolor - ipsum;
-  return consectetur.adipiscing(
-    {
-      elit: sed.eiusmod(sit - dolor) / amet + 2,
-    },
-    (tempor, incididunt) => ipsum + amet * incididunt
-  );
-};
-
-const magna = aliqua => aliqua.ut((enim, ad) => enim, 0);
-```
-
-```js
-const minim = (ad, enim) => dolore.magna(ad / enim);
-
-const sed = (eiusmod, tempor, incididunt) => {
-  const ut = tempor - eiusmod;
-  return labore.et(
-    {
-      amet: dolore.magna(incididunt - tempor) / ut + 2,
-    },
-    (aliqua, elit) => eiusmod + ut * elit
-  );
-};
-```
-
-</Step>
-
-</CodeSurferColumns>
-
----
-
 docs:  
-[codesurfer.pomb.us](https://codesurfer.pomb.us)
+[Terraform](https://www.terraform.io/docs/index.html)  
+made with:  
+[MDX Deck](https://github.com/jxnblk/mdx-deck)  
+[CodeSurfer](https://github.com/pomber/code-surfer/tree/code-surfer-v2)
