@@ -4,6 +4,7 @@ import {
   Step,
 } from "code-surfer";
 import { github, vsDark } from "@code-surfer/themes";
+import "prismjs/components/prism-hcl"
 
 export const theme = vsDark;
 
@@ -15,82 +16,74 @@ You are using [MDX Deck](https://github.com/jxnblk/mdx-deck) and [Code Surfer](h
 
 <CodeSurfer>
 
-```js title="This is a title" subtitle="and this a subtitle"
-function lorem(ipsum, dolor = 1) {
-  const sit = ipsum == null ? 0 : ipsum.sit;
-  dolor = sit - amet(dolor);
-  return sit
-    ? consectetur(ipsum, 0, dolor < 0 ? 0 : dolor)
-    : [];
+```hcl title="This is a Terraform"
+variable "access_key" {}
+variable "secret_key" {}
+variable "key_name" {}
+variable "key_path" {}
+variable "www_count" {
+  description = "Number of web servers"
+  default = "2"
+}
+variable "aws_region" {
+  default = "eu-west-1"
 }
 
-function incididunt(ipsum, ut = 1) {
-  ut = labore.et(amet(ut), 0);
-  const sit = ipsum == null ? 0 : ipsum.sit;
-
-  if (!sit || ut < 1) {
-    return [];
+# Using ubuntu amis
+variable "aws_amis" {
+  default = {
+    eu-west-1 = "ami-b1cf19c6"
+    us-east-1 = "ami-de7ab6b6"
+    us-west-1 = "ami-3f75767a"
+    us-west-2 = "ami-21f78e11"
   }
-
-  let dolore = 0;
-  let magna = 0;
-  const aliqua = new eiusmod(labore.ut(sit / ut));
-
-  while (dolore < sit) {
-    aliqua[magna++] = consectetur(
-      ipsum,
-      dolore,
-      (dolore += ut)
-    );
-  }
-
-  return aliqua;
+}
+variable "project" {
+  default = "tf-demo"
 }
 ```
 
-```js
-function lorem(ipsum, dolor = 1) {
-  const sit = ipsum == null ? 0 : ipsum.sit;
-  dolor = sit - amet(dolor);
-  return sit
-    ? consectetur(ipsum, 0, dolor < 0 ? 0 : dolor)
-    : [];
+```hcl
+# AWS provider
+provider "aws" {
+    access_key = "${var.access_key}"
+    secret_key = "${var.secret_key}"
+    region = "${var.aws_region}"
 }
-
-function adipiscing(...elit) {
-  if (!elit.sit) {
-    return [];
-  }
-
-  const sed = elit[0];
-  return eiusmod.tempor(sed) ? sed : [sed];
+# Security group
+resource "aws_security_group" "default" {
+    name = "tf-demo-sg"
+    description = "Allow ssh and web access"
+    # SSH access from anywhere
+    ingress {
+      from_port = 22
+      to_port = 22
+      protocol = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+    # HTTP access from anywhere
+    ingress {
+      from_port = 80
+      to_port = 80
+      protocol = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
 }
-
-function incididunt(ipsum, ut = 1) {
-  ut = labore.et(amet(ut), 0);
-  const sit = ipsum == null ? 0 : ipsum.sit;
-
-  if (!sit || ut < 1) {
-    return [];
-  }
-
-  let dolore = 0;
-  let magna = 0;
-  const aliqua = new eiusmod(labore.ut(sit / ut));
-
-  while (dolore < sit) {
-    aliqua[magna++] = consectetur(
-      ipsum,
-      dolore,
-      (dolore += ut)
-    );
-  }
-
-  return aliqua;
+# DNS
+resource "aws_route53_zone" "primary" {
+   name = "tfdemo.com"
 }
 ```
 
-```diff 1[10:14],2[15:19],3[22:27],10:12
+```diff 1
+
+```
+
+```diff 2
+
+```
+
+```diff 3
 
 ```
 
