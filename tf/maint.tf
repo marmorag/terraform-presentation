@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = "marmorag-tf-state"
+    key    = "state/tf-pres/terraform.tfstate"
+    region = "eu-west-2"
+  }
+}
+
 provider "netlify" {
   token = var.netlify_token
 }
