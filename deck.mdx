@@ -4,7 +4,9 @@ import {
   Step,
 } from "code-surfer";
 import { github, vsDark } from "@code-surfer/themes";
+
 import "prismjs/components/prism-hcl"
+import "prismjs/components/prism-bash"
 
 export const theme = vsDark;
 
@@ -75,75 +77,204 @@ Automate provisioning using infrastructure-as-code
 ```hcl title="This is a Terraform"
 variable "access_key" {}
 variable "secret_key" {}
-variable "key_name" {}
-variable "key_path" {}
-variable "www_count" {
-  description = "Number of web servers"
-  default = "2"
-}
-variable "aws_region" {
-  default = "eu-west-1"
+
+provider "aws" {
+    access_key = var.access_key
+    secret_key = var.secret_key
+    region = "eu-west-3"
 }
 
-# Using ubuntu amis
-variable "aws_amis" {
-  default = {
-    eu-west-1 = "ami-b1cf19c6"
-    us-east-1 = "ami-de7ab6b6"
-    us-west-1 = "ami-3f75767a"
-    us-west-2 = "ami-21f78e11"
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"]
   }
 }
-variable "project" {
-  default = "tf-demo"
-}
-```
 
-```hcl
-# AWS provider
-provider "aws" {
-    access_key = "${var.access_key}"
-    secret_key = "${var.secret_key}"
-    region = "${var.aws_region}"
-}
-# Security group
-resource "aws_security_group" "default" {
-    name = "tf-demo-sg"
-    description = "Allow ssh and web access"
-    # SSH access from anywhere
-    ingress {
-      from_port = 22
-      to_port = 22
-      protocol = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-    # HTTP access from anywhere
-    ingress {
-      from_port = 80
-      to_port = 80
-      protocol = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-}
-# DNS
-resource "aws_route53_zone" "primary" {
-   name = "tfdemo.com"
-}
-```
+resource "aws_instance" "web" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t2.micro"
 
-```diff 1
+  tags = {
+    Name = "ASampleTest"
+  }
+}
 
 ```
 
-```diff 2
+
+```diff 1:2
 
 ```
 
-```diff 3
+```diff 3:8
+
+```
+
+```diff 9:17
+
+```
+
+```diff 18:26
 
 ```
 
 </CodeSurfer>
+
+---
+
+<CodeSurfer>
+
+
+```bash title="Terraform (main) commands"
+terraform init -- fetch plugin & other TF things
+terraform plan -- build the execution plan & display
+terraform apply -- build exec. plan & prompt to apply
+terraform destroy -- danger zone, just drop everything
+```
+
+</CodeSurfer>
+
+---
+
+<CodeSurfer>
+
+```hcl title="Time to demo" subtitle="// variables.tf"
+variable "netlify_token" {
+  description = "The netlify application token to authorize against provider"
+}
+
+variable "github_token" {
+  description = "The github auth token"
+}
+
+variable "github_organization" {
+  default = "marmorag"
+}
+```
+
+
+```hcl title="Time to demo" subtitle="// terraform.tfvars"
+netlify_token = "<DA SECRET>"
+github_token = "<DA BIGGER SECRET>"
+```
+
+
+```hcl title="Time to demo" subtitle="// main.tf"
+provider "netlify" {
+  token = var.netlify_token
+}
+
+provider "github" {
+  token        = var.github_token
+  organization = var.github_organization
+}
+```
+
+
+```hcl title="Time to demo" subtitle="// main.tf"
+provider "netlify" {
+  token = var.netlify_token
+}
+
+provider "github" {
+  token        = var.github_token
+  organization = var.github_organization
+}
+
+resource "netlify_deploy_key" "key" {}
+
+resource "github_repository_deploy_key" "key" {
+  title      = "Netlify"
+  repository = "terraform-presentation"
+  key        = netlify_deploy_key.key.public_key
+  read_only  = false
+}
+```
+
+```hcl title="Time to demo" subtitle="// main.tf"
+provider "netlify" {
+  token = var.netlify_token
+}
+
+provider "github" {
+  token        = var.github_token
+  organization = var.github_organization
+}
+
+resource "netlify_deploy_key" "key" {}
+
+resource "github_repository_deploy_key" "key" {
+  title      = "Netlify"
+  repository = "terraform-presentation"
+  key        = netlify_deploy_key.key.public_key
+  read_only  = false
+}
+
+resource "netlify_site" "tf-presentation" {
+  name = "tf-presentation"
+
+  repo {
+    repo_branch = "master"
+    command = "yarn build"
+    deploy_key_id = netlify_deploy_key.key.id
+    dir = "public"
+    provider = "github"
+    repo_path = "marmorag/terraform-presentation"
+  }
+}
+```
+
+```hcl title="Time to demo" subtitle="// main.tf"
+provider "netlify" {
+  token = var.netlify_token
+}
+
+provider "github" {
+  token        = var.github_token
+  organization = var.github_organization
+}
+
+resource "netlify_deploy_key" "key" {}
+
+resource "github_repository_deploy_key" "key" {
+  title      = "Netlify"
+  repository = "terraform-presentation"
+  key        = netlify_deploy_key.key.public_key
+  read_only  = false
+}
+
+resource "netlify_site" "tf-presentation" {
+  name = "tf-presentation"
+
+  repo {
+    repo_branch = "master"
+    command = "yarn build"
+    deploy_key_id = netlify_deploy_key.key.id
+    dir = "public"
+    provider = "github"
+    repo_path = "marmorag/terraform-presentation"
+  }
+}
+
+resource "github_repository_webhook" "webhook" {
+  repository = "terraform-presentation"
+  name       = "web"
+  events     = ["delete", "push", "pull_request"]
+
+  configuration {
+    content_type = "json"
+    url          = "https://api.netlify.com/hooks/github"
+  }
+
+  depends_on = [netlify_site.tf-presentation]
+}
+```
+
+</CodeSurfer>
+
 
 ---
 
