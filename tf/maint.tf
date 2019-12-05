@@ -31,7 +31,6 @@ resource "netlify_site" "tf-presentation" {
 
 resource "github_repository_webhook" "webhook" {
   repository = "terraform-presentation"
-  name       = "web"
   events     = ["delete", "push", "pull_request"]
 
   configuration {
