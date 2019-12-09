@@ -2,6 +2,8 @@
 
 This project was generated with the `npm init code-surfer-deck` command.
 
+Live : [presentation](https://tf-presentation.netlify.com)
+
 ## Development
 
 To run the presentation deck in development mode:
